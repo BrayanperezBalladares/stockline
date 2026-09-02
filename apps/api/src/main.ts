@@ -1,9 +1,17 @@
-import "dotenv/config";
 import "reflect-metadata";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { config as loadEnv } from "dotenv";
+import { resolve } from "node:path";
 import { AppModule } from "./app.module";
 import { ApplicationErrorFilter } from "./presentation/http/filters/application-error.filter";
+
+for (const envPath of [
+  resolve(process.cwd(), ".env"),
+  resolve(process.cwd(), "../../.env"),
+]) {
+  loadEnv({ path: envPath, override: false, quiet: true });
+}
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -25,4 +33,3 @@ async function bootstrap(): Promise<void> {
 }
 
 void bootstrap();
-
