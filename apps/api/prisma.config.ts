@@ -4,6 +4,7 @@ import { defineConfig } from "prisma/config";
 
 for (const envPath of [
   resolve(process.cwd(), ".env"),
+  resolve(process.cwd(), "../.env"),
   resolve(process.cwd(), "../../.env"),
 ]) {
   loadEnv({ path: envPath, override: false, quiet: true });

@@ -8,6 +8,7 @@ import { ApplicationErrorFilter } from "./presentation/http/filters/application-
 
 for (const envPath of [
   resolve(process.cwd(), ".env"),
+  resolve(process.cwd(), "../.env"),
   resolve(process.cwd(), "../../.env"),
 ]) {
   loadEnv({ path: envPath, override: false, quiet: true });
