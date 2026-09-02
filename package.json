@@ -1,0 +1,25 @@
+{
+  "name": "stockline",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev:api": "npm run start:dev --workspace @stockline/api",
+    "dev:web": "npm run dev --workspace @stockline/web",
+    "prisma:generate": "npm run prisma:generate --workspace @stockline/api",
+    "db:migrate": "npm run db:migrate --workspace @stockline/api"
+  },
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "allowScripts": {
+    "prisma@7.10.0": true,
+    "@prisma/engines@7.10.0": true,
+    "esbuild@0.28.2": true
+  }
+}

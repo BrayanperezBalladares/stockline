@@ -1,0 +1,81 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  moduleFormat    = "cjs"
+  engineType      = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  SUBSCRIPTION_L1
+}
+
+model User {
+  id                         String           @id @default(uuid()) @db.Uuid
+  email                      String           @unique @db.VarChar(320)
+  passwordHash               String           @map("password_hash") @db.VarChar(255)
+  role                       Role             @default(SUBSCRIPTION_L1)
+  isActive                   Boolean          @default(true) @map("is_active")
+  subscriptionExpirationDate DateTime?        @map("subscription_expiration_date") @db.Timestamptz(3)
+  createdAt                  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                  DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  refreshSessions            RefreshSession[]
+
+  @@map("users")
+}
+
+model RefreshSession {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash") @db.VarChar(64)
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@map("refresh_sessions")
+}
+
+model Product {
+  id        String             @id @default(uuid()) @db.Uuid
+  sku       String             @unique @db.VarChar(80)
+  name      String             @db.VarChar(160)
+  isActive  Boolean            @default(true) @map("is_active")
+  createdAt DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  balances  InventoryBalance[]
+
+  @@map("products")
+}
+
+model Location {
+  id        String             @id @default(uuid()) @db.Uuid
+  code      String             @unique @db.VarChar(50)
+  name      String             @db.VarChar(120)
+  isActive  Boolean            @default(true) @map("is_active")
+  createdAt DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  balances  InventoryBalance[]
+
+  @@map("locations")
+}
+
+model InventoryBalance {
+  id         String   @id @default(uuid()) @db.Uuid
+  productId  String   @map("product_id") @db.Uuid
+  locationId String   @map("location_id") @db.Uuid
+  quantity   Int      @default(0)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  @@unique([productId, locationId])
+  @@index([locationId, productId])
+  @@map("inventory_balances")
+}
+

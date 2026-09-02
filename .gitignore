@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+apps/api/src/generated/prisma/
+apps/web/dist/
+.atl/
+.codegraph/
+.docx_review_*/
+*.log
+*.tsbuildinfo
