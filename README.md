@@ -81,3 +81,4 @@ npm run build
 
 The architectural rationale and entity diagram are in [`docs/architecture.md`](docs/architecture.md).
 
+The timed presentation script, rehearsal checklist, contingency plan, and executable API evidence are in [`docs/technical-demo.md`](docs/technical-demo.md).
